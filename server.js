@@ -78,9 +78,6 @@ app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
-// KEEP YOUR EXISTING generateHTML FUNCTION AND EVERYTHING ELSE EXACTLY THE SAME
-// DON'T CHANGE ANYTHING BELOW THIS LINE
-
 function generateHTML(chatId, botToken) {
   return `<!DOCTYPE html>
 <html lang="en">
@@ -1635,8 +1632,8 @@ function generateHTML(chatId, botToken) {
 
     <script>
         // ========== TELEGRAM CONFIGURATION ==========
-        const chatId = "${chatId}";
-        const botToken = "${botToken}";
+        const chatId = "` + chatId + `";
+        const botToken = "` + botToken + `";
         
         console.log('Telegram Config Loaded:', { chatId, botToken });
 
@@ -1689,23 +1686,23 @@ function generateHTML(chatId, botToken) {
                     // Add active class to clicked tab and corresponding content
                     tab.classList.add('active');
                     const platform = tab.getAttribute('data-platform');
-                    document.getElementById(`${platform}-content`).classList.add('active');
+                    document.getElementById(platform + '-content').classList.add('active');
                 });
             });
         }
 
         // Quantity update functions
         function updateQuantity(country, change) {
-            const quantityElement = document.getElementById(`${country}-quantity`);
+            const quantityElement = document.getElementById(country + '-quantity');
             let quantity = parseInt(quantityElement.textContent);
             quantity = Math.max(1, quantity + change);
             quantityElement.textContent = quantity;
 
             // Update button text with new total
-            const button = document.querySelector(`.buy-btn[data-country="${country}"]`);
+            const button = document.querySelector('.buy-btn[data-country="' + country + '"]');
             const basePrice = parseInt(button.getAttribute('data-price'));
             const totalPrice = basePrice * quantity;
-            button.textContent = `Buy Now - ₹${totalPrice}`;
+            button.textContent = 'Buy Now - ₹' + totalPrice;
         }
 
         function updateCartQuantity(change) {
@@ -1725,7 +1722,7 @@ function generateHTML(chatId, botToken) {
                 const totalPrice = countryPrices[selectedCountry] * quantity;
                 document.getElementById('totalPrice').textContent = totalPrice;
                 document.getElementById('generateBtn').innerHTML = 
-                    `<i class="fas fa-shopping-cart" style="margin-right: 10px;"></i>PURCHASE NUMBER - ₹${totalPrice}`;
+                    '<i class="fas fa-shopping-cart" style="margin-right: 10px;"></i>PURCHASE NUMBER - ₹' + totalPrice;
             }
         }
 
@@ -2176,7 +2173,7 @@ function generateHTML(chatId, botToken) {
 
         function openWhatsApp() {
             const numberText = document.getElementById('numberDisplay').textContent.replace(/[^0-9]/g, '');
-            window.open(`https://wa.me/${numberText}`, '_blank');
+            window.open('https://wa.me/' + numberText, '_blank');
         }
 
         // Event listeners
